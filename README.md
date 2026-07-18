@@ -14,7 +14,7 @@ A clean, browser-based file management tool that simulates permanent file distri
 - **Responsive Design** - Works seamlessly on desktop and mobile devices
 - **Modern UI** - Clean, glass-morphism design with smooth animations
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Option 1: Direct Usage
 Simply open the `index.html` file in your web browser. No server required!
