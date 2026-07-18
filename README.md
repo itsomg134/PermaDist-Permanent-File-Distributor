@@ -69,7 +69,7 @@ perma-dist/
 - Edge (latest)
 - Opera (latest)
 
-## 🔧 Customization
+## Customization
 
 ### Styling
 The application uses CSS custom properties (variables) that can be modified in the `<style>` section:
