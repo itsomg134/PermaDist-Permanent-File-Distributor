@@ -2,7 +2,7 @@
 
 A clean, browser-based file management tool that simulates permanent file distribution with a modern, intuitive interface.
 
-![Uploading image.png…]()
+<img width="1889" height="912" alt="image" src="https://github.com/user-attachments/assets/056028b7-17f5-473c-bcc3-1ca19517b193" />
 
 ## Features
 
