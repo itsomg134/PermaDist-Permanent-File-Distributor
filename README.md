@@ -46,7 +46,7 @@ open index.html
    - Clear all distributed files with one click
    - Files persist in the distributed section until manually cleared
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 - **HTML5** - Semantic markup
 - **CSS3** - Modern styling with glass-morphism effects
