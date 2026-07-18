@@ -94,7 +94,7 @@ By default, files are stored in memory. To persist files across sessions, you ca
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
