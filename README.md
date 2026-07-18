@@ -61,7 +61,7 @@ perma-dist/
 └── README.md           # Project documentation
 ```
 
-## 💻 Browser Support
+## Browser Support
 
 - Chrome (latest)
 - Firefox (latest)
