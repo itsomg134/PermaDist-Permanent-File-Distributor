@@ -31,7 +31,7 @@ cd perma-dist
 open index.html
 ```
 
-## 📖 How It Works
+## How It Works
 
 1. **Upload Files**
    - Drag files into the drop zone or click to select files
