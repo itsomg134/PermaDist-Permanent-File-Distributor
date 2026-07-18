@@ -53,7 +53,7 @@ open index.html
 - **Vanilla JavaScript** - No external libraries or frameworks
 - **Font Awesome** - Icons for better visual communication
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 perma-dist/
