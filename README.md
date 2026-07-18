@@ -2,7 +2,7 @@
 
 A clean, browser-based file management tool that simulates permanent file distribution with a modern, intuitive interface.
 
-![PermaDist Preview](https://via.placeholder.com/800x400/1a5c7a/ffffff?text=PermaDist+File+Distributor)
+![Uploading image.png…]()
 
 ## Features
 
