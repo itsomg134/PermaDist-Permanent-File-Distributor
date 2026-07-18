@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Permanent File Distributor</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f6f9fc 0%, #e9f0f5 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+    }
+
+    .card {
+      max-width: 1100px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 3rem;
+      padding: 2.5rem 2.8rem;
+      box-shadow: 0 20px 40px rgba(0, 20, 30, 0.15), 0 8px 20px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      transition: all 0.2s ease;
+    }
+
+    h1 {
+      font-size: 2.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #0b2a3c;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .subhead {
+      color: #2c4d62;
+      font-size: 1.1rem;
+      font-weight: 400;
+      margin-bottom: 2rem;
+      border-left: 4px solid #3d8bb9;
+      padding-left: 1rem;
+      background: rgba(61, 139, 185, 0.06);
+      border-radius: 0 8px 8px 0;
+      display: inline-block;
+      padding: 0.4rem 1.2rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 2.2rem;
+      margin-top: 0.8rem;
+    }
+
+    @media (max-width: 780px) {
+      .card {
+        padding: 1.8rem;
+      }
+      .grid-2 {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+    }
+
+    .upload-zone {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border-radius: 2rem;
+      padding: 1.8rem 1.6rem;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    .upload-zone h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #0b2a3c;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .drop-area {
+      background: #f0f6fb;
+      border: 2px dashed #8fbad6;
+      border-radius: 1.8rem;
+      padding: 2rem 1rem;
+      text-align: center;
+      transition: 0.2s;
+      cursor: pointer;
+      color: #1d4a63;
+    }
+
+    .drop-area i {
+      font-size: 2.8rem;
+      color: #2d7ca0;
+      margin-bottom: 0.5rem;
+    }
+    .drop-area p {
+      font-weight: 500;
+      margin: 0.3rem 0;
+    }
+    .drop-area small {
+      color: #3f6b82;
+    }
+
+    .drop-area.drag-over {
+      background: #d8e9f5;
+      border-color: #1d7aa8;
+      box-shadow: 0 0 0 4px rgba(29, 122, 168, 0.15);
+    }
+
+    #fileInput {
+      display: none;
+    }
+
+    .file-list-preview {
+      margin-top: 1.5rem;
+      background: white;
+      border-radius: 1.4rem;
+      padding: 0.8rem 0.2rem;
+      max-height: 220px;
+      overflow-y: auto;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid #e7edf3;
+      font-size: 0.95rem;
+    }
+    .file-item:last-child {
+      border-bottom: none;
+    }
+    .file-item .name {
+      font-weight: 500;
+      color: #173e53;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 160px;
+    }
+    .file-item .size {
+      color: #3b6a82;
+      font-size: 0.8rem;
+      background: #e9f1f7;
+      padding: 0.2rem 0.7rem;
+      border-radius: 30px;
+    }
+    .file-item .remove-btn {
+      background: none;
+      border: none;
+      color: #9b3f3f;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0 0.3rem;
+      transition: 0.1s;
+    }
+    .file-item .remove-btn:hover {
+      color: #c0392b;
+      transform: scale(1.2);
+    }
+
+    .upload-action {
+      margin-top: 1.2rem;
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: white;
+      border: none;
+      padding: 0.8rem 1.8rem;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      transition: 0.15s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.02);
+      border: 1px solid rgba(0,0,0,0.02);
+    }
+
+    .btn-primary {
+      background: #1a5c7a;
+      color: white;
+      box-shadow: 0 6px 12px rgba(20, 90, 130, 0.25);
+      border: 1px solid #226b8b;
+    }
+    .btn-primary:hover {
+      background: #0f4a63;
+      transform: scale(1.01);
+      box-shadow: 0 8px 18px rgba(16, 78, 112, 0.3);
+    }
+    .btn-primary:disabled {
+      opacity: 0.5;
+      pointer-events: none;
+      filter: grayscale(0.4);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #759bb3;
+      color: #1d4f69;
+    }
+    .btn-outline:hover {
+      background: #e5f0f8;
+    }
+    .btn-success {
+      background: #1d7a5e;
+      color: white;
+      box-shadow: 0 6px 12px rgba(26, 110, 80, 0.2);
+      border: 1px solid #238d6e;
+    }
+    .btn-success:hover {
+      background: #14634b;
+    }
+
+    .distributed-section {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border-radius: 2rem;
+      padding: 1.8rem 1.6rem;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .distributed-section h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #0b2a3c;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .distributed-list {
+      background: white;
+      border-radius: 1.6rem;
+      padding: 0.2rem 0;
+      min-height: 180px;
+      max-height: 340px;
+      overflow-y: auto;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    .dist-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1.2rem;
+      border-bottom: 1px solid #e2ecf3;
+    }
+    .dist-item:last-child {
+      border-bottom: none;
+    }
+    .dist-item .info {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .dist-item .info .fname {
+      font-weight: 500;
+      color: #10394e;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 160px;
+    }
+    .dist-item .info .fmeta {
+      font-size: 0.7rem;
+      color: #4f7a94;
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.15rem;
+    }
+    .dist-item .dl-icon {
+      color: #1c6f94;
+      background: #e4f0f9;
+      padding: 0.3rem 0.8rem;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: 0.1s;
+      cursor: default;
+      border: 1px solid #cde0ec;
+    }
+    .dist-item .dl-icon i {
+      font-size: 0.9rem;
+    }
+
+    .empty-message {
+      color: #4b738b;
+      text-align: center;
+      padding: 2.5rem 0.5rem;
+      font-style: italic;
+    }
+
+    .clear-btn {
+      margin-top: 1.2rem;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .toast-message {
+      background: #1e4a5f;
+      color: white;
+      padding: 0.5rem 1.6rem;
+      border-radius: 60px;
+      font-weight: 500;
+      display: inline-block;
+      margin-top: 0.8rem;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      opacity: 0;
+      transition: 0.2s;
+    }
+    .toast-message.show {
+      opacity: 1;
+    }
+
+    /* scroll */
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #dce8f0;
+      border-radius: 12px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #80adc9;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <header>
+    <h1>
+      <i class="fas fa-box-archive" style="color: #1d6c91;"></i> 
+      PermaDist
+    </h1>
+    <div class="subhead">
+      <i class="fas fa-cloud-upload-alt" style="margin-right: 8px;"></i> 
+      permanent file distributor · no temporary links
+    </div>
+  </header>
+
+  <div class="grid-2">
+    <section class="upload-zone">
+      <h2><i class="fas fa-upload" style="color: #1f7a9e;"></i> Upload</h2>
+      <div class="drop-area" id="dropArea">
+        <i class="fas fa-file-circle-plus"></i>
+        <p>Drag & drop files here</p>
+        <small>or click to browse</small>
+        <input type="file" id="fileInput" multiple>
+      </div>
+
+      <div class="file-list-preview" id="selectedFileList">
+        <div style="color: #597f97; padding: 0.8rem; text-align: center; font-size: 0.9rem;">
+          <i class="fas fa-folder-open"></i> no files selected
+        </div>
+      </div>
+
+      <div class="upload-action">
+        <button class="btn btn-primary" id="distributeBtn" disabled>
+          <i class="fas fa-share-nodes"></i> Distribute permanently
+        </button>
+        <button class="btn btn-outline" id="clearSelectionBtn">
+          <i class="fas fa-times"></i> Clear
+        </button>
+      </div>
+      <div id="uploadToast" class="toast-message"></div>
+    </section>
+
+    <section class="distributed-section">
+      <h2><i class="fas fa-check-circle" style="color: #1e8f6b;"></i> Distributed</h2>
+      <div class="distributed-list" id="distributedFileList">
+        <div class="empty-message">
+          <i class="fas fa-database" style="margin-right: 8px;"></i> no files distributed yet
+        </div>
+      </div>
+      <div class="clear-btn">
+        <button class="btn btn-outline" id="clearAllDistributedBtn" style="font-size:0.85rem;">
+          <i class="fas fa-trash-can"></i> Clear all
+        </button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+  (function() {
+    "use strict";
+
+    let distributedFiles = [];
+
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('fileInput');
+    const selectedFileListEl = document.getElementById('selectedFileList');
+    const distributeBtn = document.getElementById('distributeBtn');
+    const clearSelectionBtn = document.getElementById('clearSelectionBtn');
+    const distributedListEl = document.getElementById('distributedFileList');
+    const clearAllDistributedBtn = document.getElementById('clearAllDistributedBtn');
+    const uploadToast = document.getElementById('uploadToast');
+
+    function formatSize(bytes) {
+      if (bytes === 0) return '0 B';
+      const k = 1024;
+      const sizes = ['B', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      const val = (bytes / Math.pow(k, i)).toFixed(1);
+      return val + ' ' + sizes[i];
+    }
+
+    function renderSelectedFiles() {
+      if (selectedFiles.length === 0) {
+        selectedFileListEl.innerHTML = `<div style="color: #597f97; padding: 0.8rem; text-align: center; font-size: 0.9rem;">
+          <i class="fas fa-folder-open"></i> no files selected
+        </div>`;
+        distributeBtn.disabled = true;
+        return;
+      }
+
+      let html = '';
+      selectedFiles.forEach((file, index) => {
+        html += `
+          <div class="file-item" data-index="${index}">
+            <span class="name"><i class="far fa-file" style="margin-right: 8px; color:#3b7c9e;"></i>${file.name}</span>
+            <span class="size">${formatSize(file.size)}</span>
+            <button class="remove-btn" data-index="${index}" title="remove"><i class="fas fa-xmark"></i></button>
+          </div>
+        `;
+      });
+      selectedFileListEl.innerHTML = html;
+      distributeBtn.disabled = false;
+
+      document.querySelectorAll('#selectedFileList .remove-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const idx = parseInt(this.dataset.index, 10);
+          if (!isNaN(idx) && idx >= 0 && idx < selectedFiles.length) {
+            selectedFiles.splice(idx, 1);
+            renderSelectedFiles();
+            showToast('File removed from selection');
+          }
+        });
+      });
+    }
+
+    function renderDistributedFiles() {
+      if (distributedFiles.length === 0) {
+        distributedListEl.innerHTML = `<div class="empty-message">
+          <i class="fas fa-database" style="margin-right: 8px;"></i> no files distributed yet
+        </div>`;
+        return;
+      }
+
+      let html = '';
+      const sorted = [...distributedFiles].reverse();
+      sorted.forEach((item) => {
+        const sizeStr = formatSize(item.size);
+        const dateStr = item.timestamp ? new Date(item.timestamp).toLocaleDateString('en-US', { 
+          month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' 
+        }) : 'permanent';
+        html += `
+          <div class="dist-item">
+            <div class="info">
+              <span class="fname"><i class="far fa-file-pdf" style="margin-right: 8px; color:#1b7a9c;"></i>${item.name}</span>
+              <span class="fmeta"><span>${sizeStr}</span><span>${dateStr}</span></span>
+            </div>
+            <span class="dl-icon"><i class="fas fa-link"></i> perm</span>
+          </div>
+        `;
+      });
+      distributedListEl.innerHTML = html;
+    }
+
+    function showToast(msg, duration = 2200) {
+      uploadToast.textContent = msg;
+      uploadToast.classList.add('show');
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => {
+        uploadToast.classList.remove('show');
+      }, duration);
+    }
+
+    function distributeFiles() {
+      if (selectedFiles.length === 0) {
+        showToast('No files to distribute', 1500);
+        return;
+      }
+
+      const now = Date.now();
+      for (const file of selectedFiles) {
+        distributedFiles.push({
+          name: file.name,
+          size: file.size,
+          id: 'perm-' + now + '-' + Math.random().toString(36).substring(2, 7),
+          timestamp: now,
+        });
+      }
+
+      selectedFiles = [];
+      renderSelectedFiles();
+      renderDistributedFiles();
+      showToast(`✅ ${distributedFiles.length} file(s) distributed permanently`, 2000);
+    }
+
+    function clearSelection() {
+      selectedFiles = [];
+      renderSelectedFiles();
+      fileInput.value = '';
+      showToast('Selection cleared', 1200);
+    }
+
+    function clearAllDistributed() {
+      if (distributedFiles.length === 0) {
+        showToast('No distributed files to clear', 1200);
+        return;
+      }
+      if (confirm('Permanently remove all distributed files from the list?')) {
+        distributedFiles = [];
+        renderDistributedFiles();
+        showToast('All distributed files cleared', 1500);
+      }
+    }
+
+    function handleFiles(files) {
+      if (!files || files.length === 0) return;
+      for (const file of files) {
+        // avoid duplicates (by name + size, basic)
+        const exists = selectedFiles.some(f => f.name === file.name && f.size === file.size);
+        if (!exists) {
+          selectedFiles.push(file);
+        } else {
+          showToast(`⚠️ "${file.name}" already in selection`, 1500);
+        }
+      }
+      renderSelectedFiles();
+      fileInput.value = '';
+    }
+
+    dropArea.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    dropArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropArea.classList.add('drag-over');
+    });
+
+    dropArea.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      dropArea.classList.remove('drag-over');
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropArea.classList.remove('drag-over');
+      const dt = e.dataTransfer;
+      if (dt && dt.files) {
+        handleFiles(dt.files);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files) {
+        handleFiles(e.target.files);
+      }
+    });
+
+    distributeBtn.addEventListener('click', distributeFiles);
+    clearSelectionBtn.addEventListener('click', clearSelection);
+    clearAllDistributedBtn.addEventListener('click', clearAllDistributed);
+
+    (function seedDemo() {
+      if (distributedFiles.length === 0) {
+        distributedFiles.push({
+          name: 'Q4_Report_Final.pdf',
+          size: 1240000,
+          id: 'perm-seed1',
+          timestamp: Date.now() - 3600000 * 2,
+        });
+        distributedFiles.push({
+          name: 'brand_assets_2026.zip',
+          size: 8400000,
+          id: 'perm-seed2',
+          timestamp: Date.now() - 3600000 * 5,
+        });
+        renderDistributedFiles();
+      }
+    })();
+
+  })();
+</script>
+
+</body>
+</html>
