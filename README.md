@@ -86,7 +86,7 @@ By default, files are stored in memory. To persist files across sessions, you ca
 - Connect to a backend API
 - Use IndexedDB for client-side persistence
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
@@ -103,7 +103,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Font Awesome](https://fontawesome.com/) for the icons
 - [Google Fonts](https://fonts.google.com/) for the system font stack
 
-## 📞 Contact
+## Contact
 
 Your Name - [@yourtwitter](https://twitter.com/yourtwitter) - email@example.com
 
